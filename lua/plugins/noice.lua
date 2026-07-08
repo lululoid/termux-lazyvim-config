@@ -5,7 +5,9 @@ return {
     views = {
       cmdline_popup = {
         size = {
-          min_width = 40,          width = "auto",           height = "auto",
+          min_width = 42,
+          width = "auto",
+          height = "auto",
         },
       },
     },

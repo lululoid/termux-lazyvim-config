@@ -19,7 +19,8 @@ return {
           cmd = { "clangd", "--background-index", "--clang-tidy" },
         },
         kotlin_language_server = {
-          mason = true,         init_options = {
+          mason = true,
+          init_options = {
             storagePath = vim.fn.stdpath("cache") .. "/kotlin_language_server"
           },
         },
