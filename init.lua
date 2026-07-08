@@ -2,30 +2,28 @@
 require("config.lazy")
 
 vim.cmd.colorscheme "catppuccin"
-vim.o.wrap = true
-vim.o.clipboard = "unnamedplus"
-vim.o.tabstop = 2
-vim.o.softtabstop = 2
-vim.o.shiftwidth = 2
-vim.o.expandtab = true
-vim.o.linebreak = true
-vim.o.wrap = true
-vim.o.breakindent = true
 
 -- Termux clipboard
-return {
-  g = {
-    clipboard = {
-      name = "termux-clipboard",
-      copy = {
-        ["+"] = "termux-clipboard-set",
-        ["*"] = "termux-clipboard-set",
-      },
-      paste = {
-        ["+"] = "termux-clipboard-get",
-        ["*"] = "termux-clipboard-get",
-      },
-      cache_enabled = 0,
-    },
+local osc52_copy_plus = require('vim.ui.clipboard.osc52').copy('+')
+local osc52_copy_star = require('vim.ui.clipboard.osc52').copy('*')
+
+vim.opt.clipboard = "unnamedplus"
+vim.g.clipboard = {
+  name = "combined-osc52-termux",
+  copy = {
+    ["+"] = function(lines, regtype)
+      osc52_copy_plus(lines, regtype)
+      vim.fn.system("termux-clipboard-set", table.concat(lines, "\n"))
+    end,
+    ["*"] = function(lines, regtype)
+      osc52_copy_star(lines, regtype)
+      vim.fn.system("termux-clipboard-set", table.concat(lines, "\n"))
+    end,
   },
+  paste = {
+    -- OSC 52 paste is typically blocked, so fall back completely to Termux
+    ["+"] = { "termux-clipboard-get" },
+    ["*"] = { "termux-clipboard-get" },
+  },
+  cache_enabled = 0,
 }
